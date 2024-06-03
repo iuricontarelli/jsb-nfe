@@ -39,18 +39,29 @@ public class NotaFiscalController {
     @GetMapping("/{id}")
     public ResponseEntity<NotaFiscal> buscarNotaFiscalPorId(@PathVariable Long id) {
         Optional<NotaFiscal> notaFiscal = service.buscarPorId(id);
-        return notaFiscal.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        
+        if (notaFiscal.isPresent()) {
+            return ResponseEntity.ok(notaFiscal.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<NotaFiscal> atualizarNotaFiscal(@PathVariable Long id, @RequestBody NotaFiscal notaFiscalAtualizada) {
         Optional<NotaFiscal> notaFiscal = service.atualizar(id, notaFiscalAtualizada);
-        return notaFiscal.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        
+        if (notaFiscal.isPresent()) {
+            return ResponseEntity.ok(notaFiscal.get());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
     
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarNotaFiscal(@PathVariable Long id) {
         Optional<NotaFiscal> notaFiscal = service.buscarPorId(id);
+        
         if (notaFiscal.isPresent()) {
             service.deletar(id);
             return ResponseEntity.noContent().build();
