@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.iuri.nfe.application.exception.NotaFiscalNotFoundException;
 import com.iuri.nfe.domain.model.NotaFiscal;
 import com.iuri.nfe.domain.service.NotaFiscalService;
 import com.iuri.nfe.infra.repository.NotaFiscalRepository;
@@ -30,18 +31,31 @@ public class NotaFiscalServiceImpl implements NotaFiscalService {
 
     @Override
     public Optional<NotaFiscal> buscarPorId(Long id) {
-        return repository.findById(id);
+        Optional<NotaFiscal> notaFiscal = repository.findById(id);
+
+        if (notaFiscal.isEmpty()) {
+            throw new NotaFiscalNotFoundException("Nota Fiscal com ID " + id + " não encontrada!");
+        }
+
+        return notaFiscal;
     }
 
     @Override
     public Optional<NotaFiscal> atualizar(Long id, NotaFiscal notaFiscalAtualizada) {
-        return repository.findById(id).map(notaFiscal -> {
-            notaFiscal.setFornecedor(notaFiscalAtualizada.getFornecedor());
-            notaFiscal.setCliente(notaFiscalAtualizada.getCliente());
-            notaFiscal.setProduto(notaFiscalAtualizada.getProduto());
-            notaFiscal.setData(notaFiscalAtualizada.getData());
-            return repository.save(notaFiscal);
-        });
+        Optional<NotaFiscal> notaFiscal = repository.findById(id);
+
+        if (notaFiscal.isEmpty()) {
+            throw new NotaFiscalNotFoundException("Nota Fiscal com ID " + id + " não encontrada!");
+        }
+
+        NotaFiscal existingNotaFiscal = notaFiscal.get();
+
+        existingNotaFiscal.setFornecedor(notaFiscalAtualizada.getFornecedor());
+        existingNotaFiscal.setCliente(notaFiscalAtualizada.getCliente());
+        existingNotaFiscal.setProduto(notaFiscalAtualizada.getProduto());
+        existingNotaFiscal.setData(notaFiscalAtualizada.getData());
+
+        return Optional.of(repository.save(existingNotaFiscal));
     }        
 
     @Override
