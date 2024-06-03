@@ -13,27 +13,42 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.iuri.nfe.domain.model.Empresa;
 import com.iuri.nfe.domain.model.NotaFiscal;
 import com.iuri.nfe.domain.service.impl.NotaFiscalServiceImpl;
+import com.iuri.nfe.infra.repository.EmpresaRepository;
 
 @RestController
 @RequestMapping("/nf")
 public class NotaFiscalController {
 
     private final NotaFiscalServiceImpl service;
+    private final EmpresaRepository empresaRepository;
 
-    public NotaFiscalController(NotaFiscalServiceImpl service) {
+    public NotaFiscalController(
+        NotaFiscalServiceImpl service,
+        EmpresaRepository empresaRepository
+    ) {
         this.service = service;
+        this.empresaRepository = empresaRepository;
     }
 
     @PostMapping
-    public NotaFiscal criarNotaFiscal(@RequestBody NotaFiscal notaFiscal) {
-        return service.salvar(notaFiscal);
+    public ResponseEntity<NotaFiscal> criarNotaFiscal(@RequestBody NotaFiscal notaFiscal) {
+        Empresa empresa = notaFiscal.getEmpresa();
+
+        if (empresa != null) {
+            empresaRepository.save(empresa);
+        }
+        
+        NotaFiscal savedNotaFiscal = service.salvar(notaFiscal);
+        return ResponseEntity.ok(savedNotaFiscal);
     }
 
     @GetMapping
-    public List<NotaFiscal> listarNotaFiscals() {
-        return service.listar();
+    public ResponseEntity<List<NotaFiscal>> listarNotaFiscals() {
+        List<NotaFiscal> notasFiscais = service.listar();
+        return ResponseEntity.ok(notasFiscais);
     }
     
     @GetMapping("/{id}")
@@ -49,10 +64,10 @@ public class NotaFiscalController {
 
     @PutMapping("/{id}")
     public ResponseEntity<NotaFiscal> atualizarNotaFiscal(@PathVariable Long id, @RequestBody NotaFiscal notaFiscalAtualizada) {
-        Optional<NotaFiscal> notaFiscal = service.atualizar(id, notaFiscalAtualizada);
-        
-        if (notaFiscal.isPresent()) {
-            return ResponseEntity.ok(notaFiscal.get());
+        Optional<NotaFiscal> updatedNotaFiscal = service.atualizar(id, notaFiscalAtualizada);
+
+        if (updatedNotaFiscal.isPresent()) {
+            return ResponseEntity.ok(updatedNotaFiscal.get());
         } else {
             return ResponseEntity.notFound().build();
         }

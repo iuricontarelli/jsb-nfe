@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class NotaFiscal {
@@ -14,15 +15,17 @@ public class NotaFiscal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fornecedor;
+    @ManyToOne
+    private Empresa empresa;
+
     private String cliente;
     private String produto;
     private LocalDate data;
 
     public NotaFiscal() {}
 
-    public NotaFiscal(String fornecedor, String cliente, String produto, LocalDate data) {
-        this.fornecedor = fornecedor;
+    public NotaFiscal(Empresa empresa, String cliente, String produto, LocalDate data) {
+        this.empresa = empresa;
         this.cliente = cliente;
         this.produto = produto;
         this.data = data;
@@ -34,11 +37,11 @@ public class NotaFiscal {
     public void setId(Long id) {
         this.id = id;
     }
-    public String getFornecedor() {
-        return fornecedor;
+    public Empresa getEmpresa() {
+        return empresa;
     }
-    public void setFornecedor(String fornecedor) {
-        this.fornecedor = fornecedor;
+    public void setEmpresa(Empresa empresa) {
+        this.empresa = empresa;
     }
     public String getCliente() {
         return cliente;
