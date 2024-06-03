@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.iuri.nfe.application.exception.NotaFiscalNotFoundException;
 import com.iuri.nfe.domain.model.Empresa;
-import com.iuri.nfe.domain.model.Endereco;
 import com.iuri.nfe.domain.model.NotaFiscal;
 import com.iuri.nfe.domain.service.NotaFiscalService;
 import com.iuri.nfe.domain.service.impl.util.AtualizacaoService;
