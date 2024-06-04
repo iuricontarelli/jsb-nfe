@@ -15,18 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.iuri.nfe.domain.model.Empresa;
 import com.iuri.nfe.domain.model.NotaFiscal;
-import com.iuri.nfe.domain.service.impl.NotaFiscalServiceImpl;
+import com.iuri.nfe.domain.service.NotaFiscalService;
 import com.iuri.nfe.infra.repository.EmpresaRepository;
 
 @RestController
 @RequestMapping("/nf")
 public class NotaFiscalController {
 
-    private final NotaFiscalServiceImpl service;
+    private final NotaFiscalService service;
     private final EmpresaRepository empresaRepository;
 
     public NotaFiscalController(
-        NotaFiscalServiceImpl service,
+        NotaFiscalService service,
         EmpresaRepository empresaRepository
     ) {
         this.service = service;
